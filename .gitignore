@@ -22,6 +22,10 @@
 hs_err_pid*
 
 # generated ones
-build
-out
-.gradle
+.idea
+**/gradle/
+**/.gradle/
+**/build/
+**/gradlew
+**/*.bat
+**/out/
