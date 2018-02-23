@@ -27,19 +27,27 @@ public class RegraStatusQueryBuilder {
     public static final String SINGLE_QUOT_MARK = "'";
     public static final String COMMA_IN_NOT_IN_CLAUSE = ", ";
 
-    // TODO static?
-    public static String criarQuery(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
+    private QueryStatus queryStatus;
+
+    public QueryStatus criarQuery(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
         validarDadosEntrada(nomeJanela, regraStatusDinamica);
 
-        return new StringBuilder()
+        queryStatus = new QueryStatus();
+
+        String queryGerada = new StringBuilder()
                 .append(gerarInsertNaWindow(nomeJanela))
                 .append(gerarSelect(regraStatusDinamica))
                 .append(gerarFromDoSelect(regraStatusDinamica))
                 .append(gerarWhereDoSelect(regraStatusDinamica))
                 .toString();
+
+        if (CollectionUtils.isEmpty(queryStatus.getErros()))
+            queryStatus.setQueryGerada(queryGerada);
+
+        return queryStatus;
     }
 
-    private static void validarDadosEntrada(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
+    private void validarDadosEntrada(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
         // TODO Externalizar para um Validator
 
         if (nomeJanela == null)
@@ -60,11 +68,11 @@ public class RegraStatusQueryBuilder {
     }
 
 
-    private static String gerarInsertNaWindow(String regraBase) {
+    private String gerarInsertNaWindow(String regraBase) {
         return "INSERT INTO " + regraBase + ESPACO;
     }
 
-    private static String gerarWhereDoSelect(RegraDinamicaStatus regraStatusDinamica) {
+    private String gerarWhereDoSelect(RegraDinamicaStatus regraStatusDinamica) {
         StringBuilder whereSelect = new StringBuilder("WHERE ");
 
         switch (regraStatusDinamica.getTipoClausula()) {
@@ -81,7 +89,7 @@ public class RegraStatusQueryBuilder {
         return whereSelect.toString();
     }
 
-    private static String gerarFromDoSelect(RegraDinamicaStatus regraStatusDinamica) {
+    private String gerarFromDoSelect(RegraDinamicaStatus regraStatusDinamica) {
         String eventos = regraStatusDinamica
                 .getClausulas()
                 .stream()
@@ -100,7 +108,7 @@ public class RegraStatusQueryBuilder {
         return new StringBuilder("FROM ").append(eventos).append(ESPACO).toString();
     }
 
-    private static String extrairEventoClausula(List<ClausulaQuery> clauses) {
+    private String extrairEventoClausula(List<ClausulaQuery> clauses) {
         return clauses
                 .stream()
                 .map(c -> {
@@ -112,15 +120,15 @@ public class RegraStatusQueryBuilder {
                 }).collect(Collectors.joining(", "));
     }
 
-    private static String extrairEventoCondicao(ClausulaCondicaoQuery condicao) {
+    private String extrairEventoCondicao(ClausulaCondicaoQuery condicao) {
         return formatarNomeEvento(condicao);
     }
 
-    private static String gerarSelect(RegraDinamicaStatus regraStatusDinamica) {
+    private String gerarSelect(RegraDinamicaStatus regraStatusDinamica) {
         return "SELECT '" + regraStatusDinamica.getStatus().toString().toLowerCase() + "' ";
     }
 
-    private static String gerarQueryCondicao(RegraDinamicaStatus regraStatusDinamica) {
+    private String gerarQueryCondicao(RegraDinamicaStatus regraStatusDinamica) {
         if (CollectionUtils.isEmpty(regraStatusDinamica.getClausulas()))
             throw new RegraDinamicaQueryBuilderException("É necessário inserir somente uma condição dentro da lista de cláusulas.");
 
@@ -133,7 +141,7 @@ public class RegraStatusQueryBuilder {
         throw new RegraDinamicaQueryBuilderException("É necessário inserir uma única cláusula do tipo 'CONDICAO' para gerar a query.");
     }
 
-    private static String gerarQueryConjunto(RegraDinamicaStatus regraStatusDinamica) {
+    private String gerarQueryConjunto(RegraDinamicaStatus regraStatusDinamica) {
         return regraStatusDinamica
                 .getClausulas()
                 .stream()
@@ -142,7 +150,7 @@ public class RegraStatusQueryBuilder {
                 .collect(Collectors.joining(ESPACO + regraStatusDinamica.getTipoConjunto() + ESPACO));
     }
 
-    private static String criarClausula(ClausulaQuery clause) {
+    private String criarClausula(ClausulaQuery clause) {
         if (clause == null)
             return null;
 
@@ -154,7 +162,7 @@ public class RegraStatusQueryBuilder {
         throw new RegraDinamicaQueryBuilderException("There's no Query Clause implementation class found.");
     }
 
-    private static String criarClausulaConjunto(ClausulaQuery clause) {
+    private String criarClausulaConjunto(ClausulaQuery clause) {
         ClausulaConjuntoQuery agreggationClause = (ClausulaConjuntoQuery) clause;
         StringBuilder aggregationQuery = new StringBuilder();
 
@@ -174,7 +182,7 @@ public class RegraStatusQueryBuilder {
         return aggregationQuery.toString();
     }
 
-    private static String criarClausulaCondicao(ClausulaQuery clause) {
+    private String criarClausulaCondicao(ClausulaQuery clause) {
         if (clause == null)
             return null;
 
@@ -193,7 +201,7 @@ public class RegraStatusQueryBuilder {
         return sb.toString();
     }
 
-    private static String formatarValorComparado(ClausulaCondicaoQuery condicaoClausula) {
+    private String formatarValorComparado(ClausulaCondicaoQuery condicaoClausula) {
         if (CategoriaCondicaoQuery.STATUS_GRUPO.equals(condicaoClausula.getCategoriaCondicao()) || CategoriaCondicaoQuery.STATUS_IC.equals(condicaoClausula.getCategoriaCondicao())) {
 
             if (TipoOperadorQuery.ESTA_CONTIDO_EM.equals(condicaoClausula.getOperador()) || TipoOperadorQuery.NAO_ESTA_CONTIDO_EM.equals(condicaoClausula.getOperador()))
@@ -205,7 +213,7 @@ public class RegraStatusQueryBuilder {
         return condicaoClausula.getValorComparado().toString();
     }
 
-    private static String formatarNomeEventoComAtributo(ClausulaCondicaoQuery condicao) {
+    private String formatarNomeEventoComAtributo(ClausulaCondicaoQuery condicao) {
         Evento.TipoEventoCondicao tipo = condicao.getEvento().getTipo();
 
         StringBuilder nomeEventoFormatado = new StringBuilder();
@@ -216,7 +224,7 @@ public class RegraStatusQueryBuilder {
                 .toString();
     }
 
-    private static String formatarNomeEvento(ClausulaCondicaoQuery condicao) {
+    private String formatarNomeEvento(ClausulaCondicaoQuery condicao) {
         if (Evento.TipoEventoCondicao.GRUPO.equals(condicao.getEvento().getTipo()))
             return "_0RegraGrupoBase_" + condicao.getEvento().getId().replaceAll("-", "_") + "Result"; // TODO quando levar pro Motor montar esse nome usando classe centralizada
         else if (Evento.TipoEventoCondicao.IC.equals(condicao.getEvento().getTipo())) {
@@ -225,7 +233,7 @@ public class RegraStatusQueryBuilder {
         return null;
     }
 
-    private static String formatarAtributoEvento(ClausulaCondicaoQuery condicao) {
+    private String formatarAtributoEvento(ClausulaCondicaoQuery condicao) {
         if (CategoriaCondicaoQuery.STATUS_GRUPO.equals(condicao.getCategoriaCondicao()) || CategoriaCondicaoQuery.STATUS_IC.equals(condicao.getCategoriaCondicao()))
             return STATUS_ATTRIBUTE;
         else if (CategoriaCondicaoQuery.CONDICAO_IC.equals(condicao.getCategoriaCondicao()))
@@ -234,7 +242,7 @@ public class RegraStatusQueryBuilder {
         return null;
     }
 
-    private static String formatarListaParaClausulaIn(Object match) { // TODO ver se podera fazer in de não-string - IN (1, 2, 3)
+    private String formatarListaParaClausulaIn(Object match) { // TODO ver se podera fazer in de não-string - IN (1, 2, 3)
         if (match instanceof List) {
             List<String> conditionsList = (List<String>) match;
 

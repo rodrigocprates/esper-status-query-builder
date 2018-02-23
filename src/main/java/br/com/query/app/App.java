@@ -1,5 +1,7 @@
 package br.com.query.app;
 
+import br.com.query.modelo.QueriesRegraDinamica;
+import br.com.query.query.builder.RegraStatusQueryBuilder;
 import br.com.query.query.clausula.ClausulaQuery;
 import br.com.query.query.condicao.CategoriaCondicaoQuery;
 import br.com.query.query.condicao.ClausulaCondicaoQuery;
@@ -20,15 +22,15 @@ public class App {
 
     public static void main(String[] args) {
 
-        RegraDinamicaService regraDinamicaService = new RegraDinamicaService();
+        RegraDinamicaService regraDinamicaService = new RegraDinamicaService(new RegraStatusQueryBuilder());
         RegraDinamica regraDinamica = new RegraDinamica();
         regraDinamica.setWarning(mockRegraDinamicaStatusWarning());
         regraDinamica.setGood(mockRegraDinamicaStatusWarning());
         regraDinamica.setError(mockRegraDinamicaStatusWarning());
         regraDinamica.setEventoBase(new Evento(Evento.TipoEventoCondicao.GRUPO, "ec4f75e0-d63d-4d25-83af-5707167a3927"));
-        List<String> queriesSequenciaEsper = regraDinamicaService.gerarQueries(regraDinamica);
+        QueriesRegraDinamica queriesRegraDinamica = regraDinamicaService.gerarQueries(regraDinamica);
 
-        System.out.println(queriesSequenciaEsper);
+        System.out.println(queriesRegraDinamica);
 
         RegraDinamicaStatus regraStatusDinamica = mockRegraDinamicaStatusWarning();
 
