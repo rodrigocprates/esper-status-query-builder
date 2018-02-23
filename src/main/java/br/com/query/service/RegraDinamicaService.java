@@ -20,7 +20,7 @@ public class RegraDinamicaService {
 
         String nomeJanela = criarNomeJanela(regra);
 
-        // TODO ver como montar objeto com error - Map chave(good, warning, window, etc) e list de erros de cada?
+        // TODO ver como montar objeto com error, se faz tudo no service ou cria no obj um Map chave(good, warning, window, etc) e list de erros de cada?
         queries.setQueryCriacaoJanela(gerarQueryCriacaoJanela(nomeJanela));
         queries.setQueryGood(queryBuilder.criarQuery(nomeJanela, regra.getGood()).getQueryGerada());
         queries.setQueryWarning(queryBuilder.criarQuery(nomeJanela, regra.getWarning()).getQueryGerada());

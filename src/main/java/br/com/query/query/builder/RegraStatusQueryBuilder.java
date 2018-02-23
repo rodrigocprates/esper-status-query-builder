@@ -39,6 +39,7 @@ public class RegraStatusQueryBuilder {
                 .append(gerarSelect(regraStatusDinamica))
                 .append(gerarFromDoSelect(regraStatusDinamica))
                 .append(gerarWhereDoSelect(regraStatusDinamica))
+                .append(";")
                 .toString();
 
         if (CollectionUtils.isEmpty(queryStatus.getErros()))

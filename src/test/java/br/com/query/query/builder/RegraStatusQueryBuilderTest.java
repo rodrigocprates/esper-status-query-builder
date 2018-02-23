@@ -35,7 +35,7 @@ public class RegraStatusQueryBuilderTest {
                 "FROM _0RegraGrupoBase_UUID_123Result, IC01Result, _0RegraGrupoBase_UUID_851574Result " +
                 "WHERE ((_0RegraGrupoBase_UUID_123Result.status NOT IN ('ERROR', 'WARNING')) " +
                     "AND (IC01Result.doubleValue > 300)) " +
-                "OR (_0RegraGrupoBase_UUID_851574Result.status = 'ERROR')", queryStatus.getQueryGerada());
+                "OR (_0RegraGrupoBase_UUID_851574Result.status = 'ERROR');", queryStatus.getQueryGerada());
     }
 
     @Test
