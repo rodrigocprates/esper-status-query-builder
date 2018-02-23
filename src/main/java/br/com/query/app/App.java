@@ -10,7 +10,7 @@ import br.com.query.query.tipo.QueryStatusEnum;
 import br.com.query.query.tipo.TipoOperadorQuery;
 import br.com.query.regra.RegraDinamica;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.regra.TipoClausulaRegraDinamica;
+import br.com.query.query.clausula.TipoClausulaRegraDinamica;
 import br.com.query.service.RegraDinamicaService;
 
 import java.util.Arrays;

@@ -1,6 +1,7 @@
 package br.com.query.regra;
 
 import br.com.query.query.clausula.ClausulaQuery;
+import br.com.query.query.clausula.TipoClausulaRegraDinamica;
 import br.com.query.query.conjunto.TipoConjuntoQuery;
 import br.com.query.query.tipo.QueryStatusEnum;
 

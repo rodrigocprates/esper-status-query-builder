@@ -1,0 +1,62 @@
+{
+  "good": {},
+  "warning": {
+    "tipo": "conjunto",
+    "operador": "AND",
+    "clausulas": [
+      {
+        "tipo": "conjunto",
+        "operador": "OR",
+        "clausulas": [
+          {
+            "evento": {
+              "tipo": "GRUPO",
+              "id": "a9be770b_af02_4b98_b157_76f502bd9ade"
+            },
+            "tipo": "condicional",
+            "categoria": "STATUS_GRUPO",
+            "operador": "EQUAL_TO",
+            "valorComparado": "warning"
+          },
+          {
+            "evento": {
+              "tipo": "IC",
+              "id": "pkgdist_wbstat_autorize_wb_distrib_transac_total"
+            },
+            "tipo": "condicional",
+            "categoria": "STATUS_IC",
+            "operador": "EQUAL_TO",
+            "valorComparado": "warning"
+          }
+        ]
+      },
+      {
+        "tipo": "conjunto",
+        "operador": "AND",
+        "clausulas": [
+          {
+            "evento": {
+              "tipo": "GRUPO",
+              "id": "a9be770b_af02_4b98_b157_76f502bd9ade"
+            },
+            "tipo": "condicional",
+            "categoria": "STATUS_GRUPO",
+            "operador": "NOT_EQUAL_TO",
+            "valorComparado": "down"
+          },
+          {
+            "evento": {
+              "tipo": "IC",
+              "id": "pkgdist_wbstat_autorize_wb_distrib_transac_total"
+            },
+            "tipo": "condicional",
+            "categoria": "STATUS_IC",
+            "operador": "NOT_EQUAL_TO",
+            "valorComparado": "down"
+          }
+        ]
+      }
+    ]
+  },
+  "error": {}
+}

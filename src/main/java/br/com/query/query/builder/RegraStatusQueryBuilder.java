@@ -9,7 +9,8 @@ import br.com.query.query.conjunto.ClausulaConjuntoQuery;
 import br.com.query.query.evento.Evento;
 import br.com.query.query.tipo.TipoOperadorQuery;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.regra.TipoClausulaRegraDinamica;
+import br.com.query.query.clausula.TipoClausulaRegraDinamica;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class RegraStatusQueryBuilder {
 
-    public static final String ESPACO = " "; // TODO StringUtils.EMPTY
+    public static final String ESPACO = " ";
     public static final String PARENTESES_ESQUERDA = "(";
     public static final String PARENTESES_DIREITA = ")";
     public static final String STATUS_ATTRIBUTE = ".status";
@@ -67,14 +68,14 @@ public class RegraStatusQueryBuilder {
         StringBuilder whereSelect = new StringBuilder("WHERE ");
 
         switch (regraStatusDinamica.getTipoClausula()) {
-            case CONJUNTO:
-                whereSelect.append(gerarQueryConjunto(regraStatusDinamica));
-                break;
             case CONDICAO:
                 whereSelect.append(gerarQueryCondicao(regraStatusDinamica));
                 break;
+            case CONJUNTO:
+                whereSelect.append(gerarQueryConjunto(regraStatusDinamica));
+                break;
             default:
-                throw new TipoRegraDinamicaNaoEncontrada();
+                throw new RegraDinamicaQueryBuilderException("Só é possível criar cláusulas de CONJUNTO ou CONDIÇÃO.");
         }
 
         return whereSelect.toString();
@@ -120,11 +121,16 @@ public class RegraStatusQueryBuilder {
     }
 
     private static String gerarQueryCondicao(RegraDinamicaStatus regraStatusDinamica) {
-        if (regraStatusDinamica.getClausulas() == null || regraStatusDinamica.getClausulas().size() == 0) // TODO CollectionUtils.isEmpty
-            return null;
+        if (CollectionUtils.isEmpty(regraStatusDinamica.getClausulas()))
+            throw new RegraDinamicaQueryBuilderException("É necessário inserir somente uma condição dentro da lista de cláusulas.");
 
-        ClausulaCondicaoQuery unicaCondicao = (ClausulaCondicaoQuery) regraStatusDinamica.getClausulas().get(0);
-        return criarClausulaCondicao(unicaCondicao);
+        if (TipoClausulaRegraDinamica.CONDICAO.equals(regraStatusDinamica.getTipoClausula())
+                && (regraStatusDinamica.getClausulas().get(0) instanceof ClausulaCondicaoQuery)) {
+            ClausulaCondicaoQuery unicaCondicao = (ClausulaCondicaoQuery) regraStatusDinamica.getClausulas().get(0);
+            return criarClausulaCondicao(unicaCondicao);
+        }
+
+        throw new RegraDinamicaQueryBuilderException("É necessário inserir uma única cláusula do tipo 'CONDICAO' para gerar a query.");
     }
 
     private static String gerarQueryConjunto(RegraDinamicaStatus regraStatusDinamica) {
@@ -232,7 +238,7 @@ public class RegraStatusQueryBuilder {
         if (match instanceof List) {
             List<String> conditionsList = (List<String>) match;
 
-            if (conditionsList != null && conditionsList.size() > 0) { // TODO !CollectionUtils.isEmpty
+            if (!CollectionUtils.isEmpty(conditionsList)) {
                 return conditionsList
                         .stream()
                         .map(c -> SINGLE_QUOT_MARK + c + SINGLE_QUOT_MARK)

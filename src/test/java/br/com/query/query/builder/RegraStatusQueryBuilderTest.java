@@ -3,7 +3,7 @@ package br.com.query.query.builder;
 import br.com.query.excecoes.RegraDinamicaQueryBuilderException;
 import br.com.query.query.tipo.QueryStatusEnum;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.regra.TipoClausulaRegraDinamica;
+import br.com.query.query.clausula.TipoClausulaRegraDinamica;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

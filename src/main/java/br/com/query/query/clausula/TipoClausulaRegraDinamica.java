@@ -1,4 +1,4 @@
-package br.com.query.regra;
+package br.com.query.query.clausula;
 
 public enum TipoClausulaRegraDinamica {
 
