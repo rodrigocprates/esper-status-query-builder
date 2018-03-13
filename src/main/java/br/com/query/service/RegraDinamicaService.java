@@ -6,7 +6,6 @@ import br.com.query.regra.RegraDinamica;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class RegraDinamicaService {
 
     private RegraStatusQueryBuilder queryBuilder;

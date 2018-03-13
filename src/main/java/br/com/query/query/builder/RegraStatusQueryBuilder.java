@@ -1,7 +1,6 @@
 package br.com.query.query.builder;
 
 import br.com.query.excecoes.RegraDinamicaQueryBuilderException;
-import br.com.query.excecoes.TipoRegraDinamicaNaoEncontrada;
 import br.com.query.query.clausula.ClausulaQuery;
 import br.com.query.query.condicao.CategoriaCondicaoQuery;
 import br.com.query.query.condicao.ClausulaCondicaoQuery;
@@ -10,7 +9,6 @@ import br.com.query.query.evento.Evento;
 import br.com.query.query.tipo.TipoOperadorQuery;
 import br.com.query.regra.RegraDinamicaStatus;
 import br.com.query.query.clausula.TipoClausulaRegraDinamica;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -49,7 +47,7 @@ public class RegraStatusQueryBuilder {
     }
 
     private void validarDadosEntrada(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
-        // TODO Externalizar para um Validator
+/**        // TODO Externalizar para um Validator
 
         if (nomeJanela == null)
             throw new RegraDinamicaQueryBuilderException("Nome da janela não pode ser vazio.");
@@ -63,7 +61,7 @@ public class RegraStatusQueryBuilder {
         } else if (regraStatusDinamica.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO)
                 && regraStatusDinamica.getClausulas().size() > 1)
             throw new RegraDinamicaQueryBuilderException(String.format("Para criar uma regra com uma única condição é necessário informar somente uma cláusula.", regraStatusDinamica.getTipoConjunto()));
-
+**/
 
         // TODO validar todos dados de entrada do objeto de regra - ver se usa @Valid do pra camada de API
     }
@@ -91,32 +89,45 @@ public class RegraStatusQueryBuilder {
     }
 
     private String gerarFromDoSelect(RegraDinamicaStatus regraStatusDinamica) {
-        String eventos = regraStatusDinamica
-                .getClausulas()
-                .stream()
-                .map(c -> {
-                    if (c instanceof ClausulaCondicaoQuery)
-                        return extrairEventoCondicao((ClausulaCondicaoQuery) c);
-                    else if (c instanceof ClausulaConjuntoQuery)
-                        return extrairEventoClausula(((ClausulaConjuntoQuery) c).getClauses());
+        String eventosSeparadoPorVirgula = "";
 
-                    return null;
-                })
-                .filter(Objects::nonNull) // TODO otimizar filter, distinct
-                .distinct()
-                .collect(Collectors.joining(", "));
+        if (regraStatusDinamica.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
+            eventosSeparadoPorVirgula = gerarFromCondicaoDoSelect(regraStatusDinamica.getCondicao());
+        else if (regraStatusDinamica.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
+            eventosSeparadoPorVirgula = gerarFromConjuntoDoSelect(regraStatusDinamica.getConjunto());
 
-        return new StringBuilder("FROM ").append(eventos).append(ESPACO).toString();
+        return new StringBuilder("FROM ").append(eventosSeparadoPorVirgula).append(ESPACO).toString();
     }
 
-    private String extrairEventoClausula(List<ClausulaQuery> clauses) {
+    private String gerarFromCondicaoDoSelect(ClausulaCondicaoQuery condicao) {
+        return extrairEventoCondicao(condicao);
+    }
+
+    private String gerarFromConjuntoDoSelect(ClausulaConjuntoQuery conjunto) {
+        return conjunto
+            .getClausulas()
+            .stream()
+            .map(c -> {
+                if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
+                    return extrairEventoCondicao(c.getCondicao());
+                else if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
+                    return extrairEventoConjunto(c.getConjunto().getClausulas());
+
+                return null;
+            })
+            .filter(Objects::nonNull) // TODO otimizar filter, distinct
+            .distinct()
+            .collect(Collectors.joining(", "));
+    }
+
+    private String extrairEventoConjunto(List<ClausulaQuery> clauses) {
         return clauses
                 .stream()
                 .map(c -> {
-                    if (c instanceof ClausulaCondicaoQuery)
-                        return extrairEventoCondicao((ClausulaCondicaoQuery) c);
-                    else if (c instanceof ClausulaConjuntoQuery)
-                        return extrairEventoClausula(((ClausulaConjuntoQuery) c).getClauses());
+                    if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
+                        return extrairEventoCondicao(c.getCondicao());
+                    else if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
+                        return extrairEventoConjunto(c.getConjunto().getClausulas());
                     return null;
                 }).collect(Collectors.joining(", "));
     }
@@ -130,13 +141,9 @@ public class RegraStatusQueryBuilder {
     }
 
     private String gerarQueryCondicao(RegraDinamicaStatus regraStatusDinamica) {
-        if (CollectionUtils.isEmpty(regraStatusDinamica.getClausulas()))
-            throw new RegraDinamicaQueryBuilderException("É necessário inserir somente uma condição dentro da lista de cláusulas.");
-
         if (TipoClausulaRegraDinamica.CONDICAO.equals(regraStatusDinamica.getTipoClausula())
-                && (regraStatusDinamica.getClausulas().get(0) instanceof ClausulaCondicaoQuery)) {
-            ClausulaCondicaoQuery unicaCondicao = (ClausulaCondicaoQuery) regraStatusDinamica.getClausulas().get(0);
-            return criarClausulaCondicao(unicaCondicao);
+                && (regraStatusDinamica.getCondicao() != null)) {
+            return criarClausulaCondicao(regraStatusDinamica.getCondicao());
         }
 
         throw new RegraDinamicaQueryBuilderException("É necessário inserir uma única cláusula do tipo 'CONDICAO' para gerar a query.");
@@ -144,50 +151,50 @@ public class RegraStatusQueryBuilder {
 
     private String gerarQueryConjunto(RegraDinamicaStatus regraStatusDinamica) {
         return regraStatusDinamica
+                .getConjunto()
                 .getClausulas()
                 .stream()
                 .map(clause -> criarClausula(clause))
                 .filter(Objects::nonNull)
-                .collect(Collectors.joining(ESPACO + regraStatusDinamica.getTipoConjunto() + ESPACO));
+                .collect(Collectors.joining(ESPACO + regraStatusDinamica.getConjunto().getTipoConjunto() + ESPACO));
     }
 
     private String criarClausula(ClausulaQuery clause) {
         if (clause == null)
             return null;
 
-        if (clause instanceof ClausulaConjuntoQuery)
-            return criarClausulaConjunto(clause);
-        else if (clause instanceof ClausulaCondicaoQuery)
-            return criarClausulaCondicao(clause);
+        if (clause.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
+            return criarClausulaConjunto(clause.getConjunto());
+        else if (clause.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
+            return criarClausulaCondicao(clause.getCondicao());
 
         throw new RegraDinamicaQueryBuilderException("There's no Query Clause implementation class found.");
     }
 
-    private String criarClausulaConjunto(ClausulaQuery clause) {
-        ClausulaConjuntoQuery agreggationClause = (ClausulaConjuntoQuery) clause;
+    private String criarClausulaConjunto(ClausulaConjuntoQuery conjunto) {
         StringBuilder aggregationQuery = new StringBuilder();
 
-        String innerClauseString = agreggationClause.getClauses()
+        String innerClauseString = conjunto.getClausulas()
                 .stream()
                 .map(c -> { // TODO pensar em criar a Factory
-                    if (c instanceof ClausulaCondicaoQuery)
-                        return criarClausulaCondicao(c);
-                    else if (c instanceof ClausulaConjuntoQuery)
-                        return criarClausulaConjunto(c);
+                    if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
+                        return criarClausulaCondicao(c.getCondicao());
+                    else if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
+                        return criarClausulaConjunto(c.getConjunto());
                     return null;
                 })
                 .filter(Objects::nonNull)
-                .collect(Collectors.joining(ESPACO + agreggationClause.getType() + ESPACO));
+                .collect(Collectors.joining(ESPACO + conjunto.getTipoConjunto() + ESPACO));
 
         aggregationQuery.append(PARENTESES_ESQUERDA).append(innerClauseString).append(PARENTESES_DIREITA);
         return aggregationQuery.toString();
     }
 
-    private String criarClausulaCondicao(ClausulaQuery clause) {
-        if (clause == null)
+    private String criarClausulaCondicao(ClausulaCondicaoQuery condicao) {
+        if (condicao == null)
             return null;
 
-        ClausulaCondicaoQuery condicaoClausula = ((ClausulaCondicaoQuery) clause);
+        ClausulaCondicaoQuery condicaoClausula = condicao;
         StringBuilder sb = new StringBuilder();
 
         if (condicaoClausula != null)

@@ -1,42 +1,22 @@
 package br.com.query.regra;
 
-import br.com.query.query.clausula.ClausulaQuery;
 import br.com.query.query.clausula.TipoClausulaRegraDinamica;
-import br.com.query.query.conjunto.TipoConjuntoQuery;
+import br.com.query.query.condicao.ClausulaCondicaoQuery;
+import br.com.query.query.conjunto.ClausulaConjuntoQuery;
 import br.com.query.query.tipo.QueryStatusEnum;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class RegraDinamicaStatus {
 
     private QueryStatusEnum status;
+
     private TipoClausulaRegraDinamica tipoClausula;
-    private TipoConjuntoQuery tipoConjunto;
-    private List<ClausulaQuery> clausulas;
 
-    public TipoClausulaRegraDinamica getTipoClausula() {
-        return tipoClausula;
-    }
-
-    public void setTipoClausula(TipoClausulaRegraDinamica tipoClausula) {
-        this.tipoClausula = tipoClausula;
-    }
-
-    public TipoConjuntoQuery getTipoConjunto() {
-        return tipoConjunto;
-    }
-
-    public void setTipoConjunto(TipoConjuntoQuery tipoConjunto) {
-        this.tipoConjunto = tipoConjunto;
-    }
-
-    public List<ClausulaQuery> getClausulas() {
-        return clausulas;
-    }
-
-    public void setClausulas(List<ClausulaQuery> clausulas) {
-        this.clausulas = clausulas;
-    }
+    private ClausulaConjuntoQuery conjunto;
+    private ClausulaCondicaoQuery condicao;
 
     public QueryStatusEnum getStatus() {
         return status;
@@ -46,4 +26,27 @@ public class RegraDinamicaStatus {
         this.status = status;
     }
 
+    public TipoClausulaRegraDinamica getTipoClausula() {
+        return tipoClausula;
+    }
+
+    public void setTipoClausula(TipoClausulaRegraDinamica tipoClausula) {
+        this.tipoClausula = tipoClausula;
+    }
+
+    public ClausulaConjuntoQuery getConjunto() {
+        return conjunto;
+    }
+
+    public void setConjunto(ClausulaConjuntoQuery conjunto) {
+        this.conjunto = conjunto;
+    }
+
+    public ClausulaCondicaoQuery getCondicao() {
+        return condicao;
+    }
+
+    public void setCondicao(ClausulaCondicaoQuery condicao) {
+        this.condicao = condicao;
+    }
 }

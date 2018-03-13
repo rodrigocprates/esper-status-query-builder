@@ -1,27 +1,32 @@
 package br.com.query.query.conjunto;
 
 import br.com.query.query.clausula.ClausulaQuery;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ClausulaConjuntoQuery implements ClausulaQuery {
+public class ClausulaConjuntoQuery {
 
-    private TipoConjuntoQuery type;
-    private List<ClausulaQuery> clauses;
+    private TipoConjuntoQuery tipoConjunto;
+    private List<ClausulaQuery> clausulas = new ArrayList<>();
 
-    public List<ClausulaQuery> getClauses() {
-        return clauses;
+    public TipoConjuntoQuery getTipoConjunto() {
+        return tipoConjunto;
     }
 
-    public void setClauses(List<ClausulaQuery> clauses) {
-        this.clauses = clauses;
+    public void setTipoConjunto(TipoConjuntoQuery tipoConjunto) {
+        this.tipoConjunto = tipoConjunto;
     }
 
-    public TipoConjuntoQuery getType() {
-        return type;
+    public List<ClausulaQuery> getClausulas() {
+        return clausulas;
     }
 
-    public void setType(TipoConjuntoQuery type) {
-        this.type = type;
+    public void setClausulas(List<ClausulaQuery> clausulas) {
+        this.clausulas = clausulas;
     }
 }

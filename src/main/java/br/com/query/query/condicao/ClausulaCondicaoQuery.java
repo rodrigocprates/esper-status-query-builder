@@ -1,16 +1,22 @@
 package br.com.query.query.condicao;
 
-import br.com.query.query.clausula.ClausulaQuery;
 import br.com.query.query.evento.Evento;
 import br.com.query.query.tipo.TipoOperadorQuery;
 
-public class ClausulaCondicaoQuery implements ClausulaQuery {
+public class ClausulaCondicaoQuery {
 
     private Evento evento;
     private TipoOperadorQuery operador;
     private Object valorComparado;
     private CategoriaCondicaoQuery categoriaCondicao;
-    private String nomeEventoFormatado;
+
+    public Evento getEvento() {
+        return evento;
+    }
+
+    public void setEvento(Evento evento) {
+        this.evento = evento;
+    }
 
     public TipoOperadorQuery getOperador() {
         return operador;
@@ -34,21 +40,5 @@ public class ClausulaCondicaoQuery implements ClausulaQuery {
 
     public void setCategoriaCondicao(CategoriaCondicaoQuery categoriaCondicao) {
         this.categoriaCondicao = categoriaCondicao;
-    }
-
-    public Evento getEvento() {
-        return evento;
-    }
-
-    public void setEvento(Evento evento) {
-        this.evento = evento;
-    }
-
-    public String getNomeEventoFormatado() {
-        return nomeEventoFormatado;
-    }
-
-    public void setNomeEventoFormatado(String nomeEventoFormatado) {
-        this.nomeEventoFormatado = nomeEventoFormatado;
     }
 }

@@ -24,15 +24,13 @@ public class App {
 
         RegraDinamicaService regraDinamicaService = new RegraDinamicaService(new RegraStatusQueryBuilder());
         RegraDinamica regraDinamica = new RegraDinamica();
-        regraDinamica.setWarning(mockRegraDinamicaStatusWarning());
-        regraDinamica.setGood(mockRegraDinamicaStatusWarning());
-        regraDinamica.setError(mockRegraDinamicaStatusWarning());
+        regraDinamica.setWarning(mockRegraDinamicaStatus(QueryStatusEnum.WARNING));
+        regraDinamica.setGood(mockRegraDinamicaStatus(QueryStatusEnum.GOOD));
+        regraDinamica.setError(mockRegraDinamicaStatus(QueryStatusEnum.ERROR));
         regraDinamica.setEventoBase(new Evento(Evento.TipoEventoCondicao.GRUPO, "ec4f75e0-d63d-4d25-83af-5707167a3927"));
         QueriesRegraDinamica queriesRegraDinamica = regraDinamicaService.gerarQueries(regraDinamica);
 
         System.out.println(queriesRegraDinamica);
-
-        RegraDinamicaStatus regraStatusDinamica = mockRegraDinamicaStatusWarning();
 
         //System.out.println(RegraStatusQueryBuilder.criarQuery("regra_base", regraStatusDinamica));
         //System.out.println(RegraStatusQueryBuilder.criarQuery("regra_base2", mockCustomRuleCondition()));
@@ -42,20 +40,15 @@ public class App {
         RegraDinamicaStatus regraStatusDinamica = new RegraDinamicaStatus();
         regraStatusDinamica.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
         regraStatusDinamica.setStatus(QueryStatusEnum.GOOD);
-        regraStatusDinamica.setClausulas(Arrays.asList(createConditional1()));
+        regraStatusDinamica.setCondicao(createConditional1());
         return regraStatusDinamica;
     }
 
     private static List<ClausulaQuery> createClauses() {
-        return Arrays.asList(createClause1(), createClause2());
-
-    }
-
-    private static ClausulaQuery createClause1() {
-        ClausulaConjuntoQuery q = new ClausulaConjuntoQuery();
-        q.setType(TipoConjuntoQuery.AND);
-        q.setClauses(Arrays.asList(createConditional1(), createConditional2()));
-        return q;
+        ClausulaQuery clausulaQuery = new ClausulaQuery();
+        clausulaQuery.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        clausulaQuery.setCondicao(createConditional3());
+        return Arrays.asList(clausulaQuery);
     }
 
     private static ClausulaCondicaoQuery createConditional1() {
@@ -76,10 +69,6 @@ public class App {
         return q;
     }
 
-    private static ClausulaQuery createClause2() {
-        return createConditional3();
-    }
-
     private static ClausulaCondicaoQuery createConditional3() {
         ClausulaCondicaoQuery q = new ClausulaCondicaoQuery();
         q.setEvento(new Evento(Evento.TipoEventoCondicao.GRUPO, "UUID_851574"));
@@ -89,13 +78,22 @@ public class App {
         return q;
     }
 
-    private static RegraDinamicaStatus mockRegraDinamicaStatusWarning() {
+    private static RegraDinamicaStatus mockRegraDinamicaStatus(QueryStatusEnum status) {
         RegraDinamicaStatus regraStatusDinamica = new RegraDinamicaStatus();
-        regraStatusDinamica.setStatus(QueryStatusEnum.WARNING);
+        regraStatusDinamica.setStatus(status);
         regraStatusDinamica.setTipoClausula(TipoClausulaRegraDinamica.CONJUNTO);
-        regraStatusDinamica.setTipoConjunto(TipoConjuntoQuery.OR);
-        regraStatusDinamica.setClausulas(createClauses());
+        regraStatusDinamica.setConjunto(createConjunto());
         return regraStatusDinamica;
+    }
+
+    private static ClausulaConjuntoQuery createConjunto() {
+
+        ClausulaConjuntoQuery clausulaConjuntoQuery = new ClausulaConjuntoQuery();
+        clausulaConjuntoQuery.setClausulas(createClauses());
+        clausulaConjuntoQuery.setTipoConjunto(TipoConjuntoQuery.AND);
+        return clausulaConjuntoQuery;
+
+
     }
 
 }

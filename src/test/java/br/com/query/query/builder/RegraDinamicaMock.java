@@ -30,7 +30,7 @@ public final class RegraDinamicaMock {
         RegraDinamicaStatus regraStatusDinamica = new RegraDinamicaStatus();
         regraStatusDinamica.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
         regraStatusDinamica.setStatus(QueryStatusEnum.GOOD);
-        regraStatusDinamica.setClausulas(Arrays.asList(createConditional1()));
+        regraStatusDinamica.setCondicao(createConditional1());
         return regraStatusDinamica;
     }
 
@@ -41,9 +41,14 @@ public final class RegraDinamicaMock {
 
     public static ClausulaQuery createClause1() {
         ClausulaConjuntoQuery q = new ClausulaConjuntoQuery();
-        q.setType(TipoConjuntoQuery.AND);
-        q.setClauses(Arrays.asList(createConditional1(), createConditional2()));
-        return q;
+        q.setTipoConjunto(TipoConjuntoQuery.AND);
+        q.setClausulas(Arrays.asList(createClause1(), createClause2()));
+
+        ClausulaQuery clausulaQuery = new ClausulaQuery();
+        clausulaQuery.setTipoClausula(TipoClausulaRegraDinamica.CONJUNTO);
+        clausulaQuery.setConjunto(q);
+        return clausulaQuery;
+
     }
 
     public static ClausulaCondicaoQuery createConditional1() {
@@ -65,7 +70,10 @@ public final class RegraDinamicaMock {
     }
 
     public static ClausulaQuery createClause2() {
-        return createConditional3();
+        ClausulaQuery c = new ClausulaQuery();
+        c.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        c.setCondicao(createConditional1());
+        return c;
     }
 
     public static ClausulaCondicaoQuery createConditional3() {
@@ -81,9 +89,15 @@ public final class RegraDinamicaMock {
         RegraDinamicaStatus regraStatusDinamica = new RegraDinamicaStatus();
         regraStatusDinamica.setStatus(status);
         regraStatusDinamica.setTipoClausula(TipoClausulaRegraDinamica.CONJUNTO);
-        regraStatusDinamica.setTipoConjunto(TipoConjuntoQuery.OR);
-        regraStatusDinamica.setClausulas(createClauses());
+        regraStatusDinamica.setConjunto(createConjunto());
         return regraStatusDinamica;
+    }
+
+    private static ClausulaConjuntoQuery createConjunto() {
+        ClausulaConjuntoQuery c = new ClausulaConjuntoQuery();
+        c.setTipoConjunto(TipoConjuntoQuery.AND);
+        c.setClausulas(createClauses());
+        return c;
     }
 
 }
