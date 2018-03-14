@@ -4,10 +4,6 @@ import br.com.query.query.clausula.TipoClausulaRegraDinamica;
 import br.com.query.query.condicao.ClausulaCondicaoQuery;
 import br.com.query.query.conjunto.ClausulaConjuntoQuery;
 import br.com.query.query.tipo.QueryStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 public class RegraDinamicaStatus {
 
