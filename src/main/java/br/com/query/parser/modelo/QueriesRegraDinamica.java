@@ -1,4 +1,4 @@
-package br.com.query.modelo;
+package br.com.query.parser.modelo;
 
 public class QueriesRegraDinamica {
 

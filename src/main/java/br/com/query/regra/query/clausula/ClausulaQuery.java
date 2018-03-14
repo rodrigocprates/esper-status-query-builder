@@ -1,7 +1,7 @@
-package br.com.query.query.clausula;
+package br.com.query.regra.query.clausula;
 
-import br.com.query.query.condicao.ClausulaCondicaoQuery;
-import br.com.query.query.conjunto.ClausulaConjuntoQuery;
+import br.com.query.regra.query.condicao.ClausulaCondicaoQuery;
+import br.com.query.regra.query.conjunto.ClausulaConjuntoQuery;
 
 public class ClausulaQuery {
 

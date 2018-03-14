@@ -1,18 +1,18 @@
 package br.com.query.app;
 
-import br.com.query.modelo.QueriesRegraDinamica;
-import br.com.query.query.builder.RegraStatusQueryBuilder;
-import br.com.query.query.clausula.ClausulaQuery;
-import br.com.query.query.condicao.CategoriaCondicaoQuery;
-import br.com.query.query.condicao.ClausulaCondicaoQuery;
-import br.com.query.query.conjunto.ClausulaConjuntoQuery;
-import br.com.query.query.conjunto.TipoConjuntoQuery;
-import br.com.query.query.evento.Evento;
-import br.com.query.query.tipo.QueryStatusEnum;
-import br.com.query.query.tipo.TipoOperadorQuery;
+import br.com.query.parser.RegraStatusQueryParser;
+import br.com.query.parser.modelo.QueriesRegraDinamica;
 import br.com.query.regra.RegraDinamica;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.clausula.ClausulaQuery;
+import br.com.query.regra.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.condicao.CategoriaCondicaoQuery;
+import br.com.query.regra.query.condicao.ClausulaCondicaoQuery;
+import br.com.query.regra.query.conjunto.ClausulaConjuntoQuery;
+import br.com.query.regra.query.conjunto.TipoConjuntoQuery;
+import br.com.query.regra.query.evento.Evento;
+import br.com.query.regra.query.tipo.QueryStatusEnum;
+import br.com.query.regra.query.tipo.TipoOperadorQuery;
 import br.com.query.service.RegraDinamicaService;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        RegraDinamicaService regraDinamicaService = new RegraDinamicaService(new RegraStatusQueryBuilder());
+        RegraDinamicaService regraDinamicaService = new RegraDinamicaService(new RegraStatusQueryParser());
         RegraDinamica regraDinamica = new RegraDinamica();
         regraDinamica.setWarning(mockRegraDinamicaStatus(QueryStatusEnum.WARNING));
         regraDinamica.setGood(mockRegraDinamicaStatus(QueryStatusEnum.GOOD));
@@ -31,9 +31,6 @@ public class App {
         QueriesRegraDinamica queriesRegraDinamica = regraDinamicaService.gerarQueries(regraDinamica);
 
         System.out.println(queriesRegraDinamica);
-
-        //System.out.println(RegraStatusQueryBuilder.criarQuery("regra_base", regraStatusDinamica));
-        //System.out.println(RegraStatusQueryBuilder.criarQuery("regra_base2", mockCustomRuleCondition()));
     }
 
 
@@ -50,7 +47,7 @@ public class App {
         clausulaQuery3.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
         clausulaQuery3.setCondicao(createConditional1());
 
-        return Arrays.asList(clausulaQuery1, clausulaQuery2, clausulaQuery3);
+        return Arrays.asList(clausulaQuery1, clausulaQuery2, clausulaQuery3, clausulaQuery3);
     }
 
     private static ClausulaCondicaoQuery createConditional1() {

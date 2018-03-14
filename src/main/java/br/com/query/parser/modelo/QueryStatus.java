@@ -1,4 +1,4 @@
-package br.com.query.query.builder;
+package br.com.query.parser.modelo;
 
 import org.springframework.util.CollectionUtils;
 

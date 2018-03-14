@@ -1,16 +1,14 @@
 package br.com.query.service;
 
-import br.com.query.modelo.QueriesRegraDinamica;
-import br.com.query.query.builder.RegraStatusQueryBuilder;
+import br.com.query.parser.RegraStatusQueryParser;
+import br.com.query.parser.modelo.QueriesRegraDinamica;
 import br.com.query.regra.RegraDinamica;
 
-import java.util.ArrayList;
-import java.util.List;
 public class RegraDinamicaService {
 
-    private RegraStatusQueryBuilder queryBuilder;
+    private RegraStatusQueryParser queryBuilder;
 
-    public RegraDinamicaService(RegraStatusQueryBuilder queryBuilder) {
+    public RegraDinamicaService(RegraStatusQueryParser queryBuilder) {
         this.queryBuilder = queryBuilder;
     }
 

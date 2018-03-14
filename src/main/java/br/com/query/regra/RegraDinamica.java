@@ -1,6 +1,6 @@
 package br.com.query.regra;
 
-import br.com.query.query.evento.Evento;
+import br.com.query.regra.query.evento.Evento;
 
 public class RegraDinamica {
 

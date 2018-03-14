@@ -1,4 +1,4 @@
-package br.com.query.query.conjunto;
+package br.com.query.regra.query.conjunto;
 
 public enum TipoConjuntoQuery {
 

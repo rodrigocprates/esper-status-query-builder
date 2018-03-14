@@ -1,4 +1,4 @@
-package br.com.query.query.condicao;
+package br.com.query.regra.query.condicao;
 
 public enum CategoriaCondicaoQuery {
 

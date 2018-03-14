@@ -1,4 +1,4 @@
-package br.com.query.query.evento;
+package br.com.query.regra.query.evento;
 
 public class Evento {
 

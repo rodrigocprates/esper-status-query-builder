@@ -1,23 +1,23 @@
 package br.com.query.query.builder;
 
 import br.com.query.excecoes.RegraDinamicaQueryBuilderException;
-import br.com.query.query.tipo.QueryStatusEnum;
+import br.com.query.parser.RegraStatusQueryParser;
+import br.com.query.parser.modelo.QueryStatus;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.tipo.QueryStatusEnum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @RunWith(JUnit4.class)
-public class RegraStatusQueryBuilderTest {
+public class RegraStatusQueryParserTest {
 
     public static final String REGRA_GRUPO_BASE_WINDOWNAME_ = "_RegraGrupoBase_WINDOWNAME_";
-    private RegraStatusQueryBuilder queryBuilder = new RegraStatusQueryBuilder();
+    private RegraStatusQueryParser queryBuilder = new RegraStatusQueryParser();
     /**
      Cenários de teste:
         validar se eventos no "from" aparecem mais de uma vez

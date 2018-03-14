@@ -1,16 +1,16 @@
 package br.com.query.query.builder;
 
-import br.com.query.query.clausula.ClausulaQuery;
-import br.com.query.query.condicao.CategoriaCondicaoQuery;
-import br.com.query.query.condicao.ClausulaCondicaoQuery;
-import br.com.query.query.conjunto.ClausulaConjuntoQuery;
-import br.com.query.query.conjunto.TipoConjuntoQuery;
-import br.com.query.query.evento.Evento;
-import br.com.query.query.tipo.QueryStatusEnum;
-import br.com.query.query.tipo.TipoOperadorQuery;
 import br.com.query.regra.RegraDinamica;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.clausula.ClausulaQuery;
+import br.com.query.regra.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.condicao.CategoriaCondicaoQuery;
+import br.com.query.regra.query.condicao.ClausulaCondicaoQuery;
+import br.com.query.regra.query.conjunto.ClausulaConjuntoQuery;
+import br.com.query.regra.query.conjunto.TipoConjuntoQuery;
+import br.com.query.regra.query.evento.Evento;
+import br.com.query.regra.query.tipo.QueryStatusEnum;
+import br.com.query.regra.query.tipo.TipoOperadorQuery;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,7 +1,7 @@
-package br.com.query.query.condicao;
+package br.com.query.regra.query.condicao;
 
-import br.com.query.query.evento.Evento;
-import br.com.query.query.tipo.TipoOperadorQuery;
+import br.com.query.regra.query.evento.Evento;
+import br.com.query.regra.query.tipo.TipoOperadorQuery;
 
 public class ClausulaCondicaoQuery {
 

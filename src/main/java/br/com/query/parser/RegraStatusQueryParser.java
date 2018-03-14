@@ -1,21 +1,22 @@
-package br.com.query.query.builder;
+package br.com.query.parser;
 
 import br.com.query.excecoes.RegraDinamicaQueryBuilderException;
-import br.com.query.query.clausula.ClausulaQuery;
-import br.com.query.query.condicao.CategoriaCondicaoQuery;
-import br.com.query.query.condicao.ClausulaCondicaoQuery;
-import br.com.query.query.conjunto.ClausulaConjuntoQuery;
-import br.com.query.query.evento.Evento;
-import br.com.query.query.tipo.TipoOperadorQuery;
+import br.com.query.parser.modelo.QueryStatus;
 import br.com.query.regra.RegraDinamicaStatus;
-import br.com.query.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.clausula.ClausulaQuery;
+import br.com.query.regra.query.clausula.TipoClausulaRegraDinamica;
+import br.com.query.regra.query.condicao.CategoriaCondicaoQuery;
+import br.com.query.regra.query.condicao.ClausulaCondicaoQuery;
+import br.com.query.regra.query.conjunto.ClausulaConjuntoQuery;
+import br.com.query.regra.query.evento.Evento;
+import br.com.query.regra.query.tipo.TipoOperadorQuery;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class RegraStatusQueryBuilder {
+public class RegraStatusQueryParser {
 
     public static final String ESPACO = " ";
     public static final String PARENTESES_ESQUERDA = "(";
@@ -159,14 +160,14 @@ public class RegraStatusQueryBuilder {
                 .collect(Collectors.joining(ESPACO + regraStatusDinamica.getConjunto().getTipoConjunto() + ESPACO));
     }
 
-    private String criarClausula(ClausulaQuery clause) {
-        if (clause == null)
+    private String criarClausula(ClausulaQuery clausula) {
+        if (clausula == null)
             return null;
 
-        if (clause.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
-            return criarClausulaConjunto(clause.getConjunto());
-        else if (clause.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
-            return criarClausulaCondicao(clause.getCondicao());
+        if (TipoClausulaRegraDinamica.CONJUNTO.equals(clausula.getTipoClausula()))
+            return criarClausulaConjunto(clausula.getConjunto());
+        else if (TipoClausulaRegraDinamica.CONDICAO.equals(clausula.getTipoClausula()))
+            return criarClausulaCondicao(clausula.getCondicao());
 
         throw new RegraDinamicaQueryBuilderException("There's no Query Clause implementation class found.");
     }
@@ -176,10 +177,10 @@ public class RegraStatusQueryBuilder {
 
         String innerClauseString = conjunto.getClausulas()
                 .stream()
-                .map(c -> { // TODO pensar em criar a Factory
-                    if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO))
+                .map(c -> {
+                    if (TipoClausulaRegraDinamica.CONDICAO.equals(c.getTipoClausula()))
                         return criarClausulaCondicao(c.getCondicao());
-                    else if (c.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO))
+                    else if (TipoClausulaRegraDinamica.CONJUNTO.equals(c.getTipoClausula()))
                         return criarClausulaConjunto(c.getConjunto());
                     return null;
                 })
@@ -194,23 +195,23 @@ public class RegraStatusQueryBuilder {
         if (condicao == null)
             return null;
 
-        ClausulaCondicaoQuery condicaoClausula = condicao;
         StringBuilder sb = new StringBuilder();
 
-        if (condicaoClausula != null)
+        if (condicao != null)
             sb.append(PARENTESES_ESQUERDA)
-                    .append(formatarNomeEventoComAtributo(condicaoClausula))
+                    .append(formatarNomeEventoComAtributo(condicao))
                     .append(ESPACO)
-                    .append(condicaoClausula.getOperador() == null ? null : condicaoClausula.getOperador().getSimbolo())
+                    .append(condicao.getOperador() == null ? null : condicao.getOperador().getSimbolo())
                     .append(ESPACO)
-                    .append(formatarValorComparado(condicaoClausula))
+                    .append(formatarValorComparado(condicao))
                     .append(PARENTESES_DIREITA);
 
         return sb.toString();
     }
 
     private String formatarValorComparado(ClausulaCondicaoQuery condicaoClausula) {
-        if (CategoriaCondicaoQuery.STATUS_GRUPO.equals(condicaoClausula.getCategoriaCondicao()) || CategoriaCondicaoQuery.STATUS_IC.equals(condicaoClausula.getCategoriaCondicao())) {
+        if (CategoriaCondicaoQuery.STATUS_GRUPO.equals(condicaoClausula.getCategoriaCondicao())
+                || CategoriaCondicaoQuery.STATUS_IC.equals(condicaoClausula.getCategoriaCondicao())) {
 
             if (TipoOperadorQuery.ESTA_CONTIDO_EM.equals(condicaoClausula.getOperador()) || TipoOperadorQuery.NAO_ESTA_CONTIDO_EM.equals(condicaoClausula.getOperador()))
                 return formatarListaParaClausulaIn(condicaoClausula.getValorComparado());
@@ -222,8 +223,6 @@ public class RegraStatusQueryBuilder {
     }
 
     private String formatarNomeEventoComAtributo(ClausulaCondicaoQuery condicao) {
-        Evento.TipoEventoCondicao tipo = condicao.getEvento().getTipo();
-
         StringBuilder nomeEventoFormatado = new StringBuilder();
 
         return nomeEventoFormatado
@@ -254,14 +253,12 @@ public class RegraStatusQueryBuilder {
         if (match instanceof List) {
             List<String> conditionsList = (List<String>) match;
 
-            if (!CollectionUtils.isEmpty(conditionsList)) {
+            if (!CollectionUtils.isEmpty(conditionsList))
                 return conditionsList
                         .stream()
                         .map(c -> SINGLE_QUOT_MARK + c + SINGLE_QUOT_MARK)
                         .collect(Collectors.joining(COMMA_IN_NOT_IN_CLAUSE, PARENTESES_ESQUERDA, PARENTESES_DIREITA));
-            }
         }
-
         return null;
     }
 }

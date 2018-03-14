@@ -1,6 +1,6 @@
-package br.com.query.query.conjunto;
+package br.com.query.regra.query.conjunto;
 
-import br.com.query.query.clausula.ClausulaQuery;
+import br.com.query.regra.query.clausula.ClausulaQuery;
 
 import java.util.ArrayList;
 import java.util.List;
