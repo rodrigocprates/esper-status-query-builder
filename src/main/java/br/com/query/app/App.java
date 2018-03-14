@@ -36,19 +36,21 @@ public class App {
         //System.out.println(RegraStatusQueryBuilder.criarQuery("regra_base2", mockCustomRuleCondition()));
     }
 
-    private static RegraDinamicaStatus mockCustomRuleCondition() {
-        RegraDinamicaStatus regraStatusDinamica = new RegraDinamicaStatus();
-        regraStatusDinamica.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
-        regraStatusDinamica.setStatus(QueryStatusEnum.GOOD);
-        regraStatusDinamica.setCondicao(createConditional1());
-        return regraStatusDinamica;
-    }
 
     private static List<ClausulaQuery> createClauses() {
-        ClausulaQuery clausulaQuery = new ClausulaQuery();
-        clausulaQuery.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
-        clausulaQuery.setCondicao(createConditional3());
-        return Arrays.asList(clausulaQuery);
+        ClausulaQuery clausulaQuery1 = new ClausulaQuery();
+        clausulaQuery1.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        clausulaQuery1.setCondicao(createConditional3());
+
+        ClausulaQuery clausulaQuery2 = new ClausulaQuery();
+        clausulaQuery2.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        clausulaQuery2.setCondicao(createConditional2());
+
+        ClausulaQuery clausulaQuery3 = new ClausulaQuery();
+        clausulaQuery3.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        clausulaQuery3.setCondicao(createConditional1());
+
+        return Arrays.asList(clausulaQuery1, clausulaQuery2, clausulaQuery3);
     }
 
     private static ClausulaCondicaoQuery createConditional1() {
