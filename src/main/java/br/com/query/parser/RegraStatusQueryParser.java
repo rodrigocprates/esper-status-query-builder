@@ -12,9 +12,12 @@ import br.com.query.regra.query.evento.Evento;
 import br.com.query.regra.query.tipo.TipoOperadorQuery;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 public class RegraStatusQueryParser {
 
@@ -85,29 +88,31 @@ public class RegraStatusQueryParser {
         return conjunto
                 .getClausulas()
                 .stream()
-                .map(c -> {
+                .flatMap(c -> {
                     if (TipoClausulaRegraDinamica.CONDICAO.equals(c.getTipoClausula()))
-                        return extrairNomeEventoCondicao(c.getCondicao());
+                        return asList(extrairNomeEventoCondicao(c.getCondicao())).stream();
                     else if (TipoClausulaRegraDinamica.CONJUNTO.equals(c.getTipoClausula()))
-                        return extrairNomeEventoConjunto(c.getConjunto().getClausulas());
+                        return extrairNomesEventosConjunto(c.getConjunto().getClausulas()).stream();
 
-                    return null;
+                    return Collections.<String>emptyList().stream();
                 })
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.joining(", "));
     }
 
-    private String extrairNomeEventoConjunto(List<ClausulaQuery> clausulas) {
+    private List<String> extrairNomesEventosConjunto(List<ClausulaQuery> clausulas) {
         return clausulas
                 .stream()
-                .map(c -> {
+                .flatMap(c -> {
                     if (TipoClausulaRegraDinamica.CONDICAO.equals(c.getTipoClausula()))
-                        return extrairNomeEventoCondicao(c.getCondicao());
+                        return asList(extrairNomeEventoCondicao(c.getCondicao())).stream();
                     else if (TipoClausulaRegraDinamica.CONJUNTO.equals(c.getTipoClausula()))
-                        return extrairNomeEventoConjunto(c.getConjunto().getClausulas());
-                    return null;
-                }).collect(Collectors.joining(", "));
+                        return extrairNomesEventosConjunto(c.getConjunto().getClausulas()).stream();
+
+                    return Collections.<String>emptyList().stream();
+                })
+                .collect(Collectors.toList());
     }
 
     private String extrairNomeEventoCondicao(ClausulaCondicaoQuery condicao) {
