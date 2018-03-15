@@ -35,8 +35,15 @@ public final class RegraDinamicaMock {
     }
 
     public static List<ClausulaQuery> createClauses() {
-        return Arrays.asList(createClause1(), createClause2());
+        ClausulaQuery clausulaQuery1 = new ClausulaQuery();
+        clausulaQuery1.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        clausulaQuery1.setCondicao(createConditional1());
 
+        ClausulaQuery clausulaQuery2 = new ClausulaQuery();
+        clausulaQuery2.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        clausulaQuery2.setCondicao(createConditional2());
+
+        return Arrays.asList(clausulaQuery1, clausulaQuery2);
     }
 
     public static ClausulaQuery createClause1() {

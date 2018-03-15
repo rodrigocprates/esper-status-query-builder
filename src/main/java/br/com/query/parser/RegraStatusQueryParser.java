@@ -29,8 +29,6 @@ public class RegraStatusQueryParser {
     private QueryStatus queryStatus;
 
     public QueryStatus criarQuery(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
-        //validarDadosEntrada(nomeJanela, regraStatusDinamica); // TODO quais validações ?
-
         queryStatus = new QueryStatus();
 
         String queryGerada = new StringBuilder()
@@ -46,27 +44,6 @@ public class RegraStatusQueryParser {
 
         return queryStatus;
     }
-
-    private void validarDadosEntrada(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
-/**        // TODO Externalizar para um Validator
-
- if (nomeJanela == null)
- throw new RegraDinamicaQueryBuilderException("Nome da janela não pode ser vazio.");
-
- if (regraStatusDinamica == null || CollectionUtils.isEmpty(regraStatusDinamica.getClausulas()))
- throw new RegraDinamicaQueryBuilderException("É necessário adicionar ao menos uma cláusula para criar uma regra.");
-
- if (regraStatusDinamica.getTipoClausula().equals(TipoClausulaRegraDinamica.CONJUNTO)
- && regraStatusDinamica.getClausulas().size() < 2) {
- throw new RegraDinamicaQueryBuilderException(String.format("Para criar uma regra com conjunto %s é necessário informar no mínimo duas cláusulas.", regraStatusDinamica.getTipoConjunto()));
- } else if (regraStatusDinamica.getTipoClausula().equals(TipoClausulaRegraDinamica.CONDICAO)
- && regraStatusDinamica.getClausulas().size() > 1)
- throw new RegraDinamicaQueryBuilderException(String.format("Para criar uma regra com uma única condição é necessário informar somente uma cláusula.", regraStatusDinamica.getTipoConjunto()));
- **/
-
-        // TODO validar todos dados de entrada do objeto de regra - ver se usa @Valid do pra camada de API
-    }
-
 
     private String gerarInsertNaWindow(String regraBase) {
         return "INSERT INTO " + regraBase + ESPACO;
@@ -116,7 +93,7 @@ public class RegraStatusQueryParser {
 
                     return null;
                 })
-                .filter(Objects::nonNull) // TODO otimizar filter, distinct
+                .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.joining(", "));
     }
@@ -214,7 +191,7 @@ public class RegraStatusQueryParser {
                 || CategoriaCondicaoQuery.STATUS_IC.equals(condicaoClausula.getCategoriaCondicao())) {
 
             if (TipoOperadorQuery.ESTA_CONTIDO_EM.equals(condicaoClausula.getOperador()) || TipoOperadorQuery.NAO_ESTA_CONTIDO_EM.equals(condicaoClausula.getOperador()))
-                return formatarListaParaClausulaIn(condicaoClausula.getValorComparado());
+                return formatarListaParaClausulaInNotIn(condicaoClausula.getValorComparado());
 
             return SINGLE_QUOT_MARK + condicaoClausula.getValorComparado() + SINGLE_QUOT_MARK;
         }
@@ -233,9 +210,9 @@ public class RegraStatusQueryParser {
 
     private String formatarNomeEvento(ClausulaCondicaoQuery condicao) {
         if (Evento.TipoEventoCondicao.GRUPO.equals(condicao.getEvento().getTipo()))
-            return "_0RegraGrupoBase_" + condicao.getEvento().getId().replaceAll("-", "_") + "Result"; // TODO quando levar pro Motor montar esse nome usando classe centralizada
+            return "_0RegraGrupoBase_" + condicao.getEvento().getId().replaceAll("-", "_") + "Result"; // TODO centralizar keywords
         else if (Evento.TipoEventoCondicao.IC.equals(condicao.getEvento().getTipo())) {
-            return condicao.getEvento().getId() + "Result"; // TODO usar classe centralizada do motor também
+            return condicao.getEvento().getId() + "Result"; // TODO centralizar keywords no motor
         }
         return null;
     }
@@ -249,7 +226,7 @@ public class RegraStatusQueryParser {
         return null;
     }
 
-    private String formatarListaParaClausulaIn(Object match) { // TODO ver se podera fazer in de não-string - IN (1, 2, 3)
+    private String formatarListaParaClausulaInNotIn(Object match) {
         if (match instanceof List) {
             List<String> conditionsList = (List<String>) match;
 

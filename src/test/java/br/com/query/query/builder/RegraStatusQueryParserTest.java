@@ -1,6 +1,5 @@
 package br.com.query.query.builder;
 
-import br.com.query.excecoes.RegraDinamicaQueryBuilderException;
 import br.com.query.parser.RegraStatusQueryParser;
 import br.com.query.parser.modelo.QueryStatus;
 import br.com.query.regra.RegraDinamicaStatus;
@@ -11,78 +10,43 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 @RunWith(JUnit4.class)
 public class RegraStatusQueryParserTest {
 
     public static final String REGRA_GRUPO_BASE_WINDOWNAME_ = "_RegraGrupoBase_WINDOWNAME_";
     private RegraStatusQueryParser queryBuilder = new RegraStatusQueryParser();
-    /**
-     Cenários de teste:
-        validar se eventos no "from" aparecem mais de uma vez
-        validar sempre que claúsulas tenham no mínimo 2 conjuntos/codicoes
-
-     */
 
     @Test
-    public void deveGerarQueryWarning() {
+    public void deveGerarQueryWarningDeConjuntoANDCom2Condicoes() {
+        // Given
+        RegraDinamicaStatus regra = RegraDinamicaMock.mockRegraDinamicaStatus(QueryStatusEnum.WARNING);
+
+        // When
         QueryStatus queryStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_,
-                RegraDinamicaMock.mockRegraDinamicaStatus(QueryStatusEnum.WARNING));
+                regra);
 
+        // Then
         assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ " +
-                "SELECT 'warning' " +
-                "FROM _0RegraGrupoBase_UUID_123Result, IC01Result, _0RegraGrupoBase_UUID_851574Result " +
-                "WHERE ((_0RegraGrupoBase_UUID_123Result.status NOT IN ('ERROR', 'WARNING')) " +
-                    "AND (IC01Result.doubleValue > 300)) " +
-                "OR (_0RegraGrupoBase_UUID_851574Result.status = 'ERROR');", queryStatus.getQueryGerada());
+                "SELECT 'warning' FROM _0RegraGrupoBase_UUID_123Result, IC01Result " +
+                "WHERE (_0RegraGrupoBase_UUID_123Result.status NOT IN ('ERROR', 'WARNING')) " +
+                "AND (IC01Result.doubleValue > 300);", queryStatus.getQueryGerada());
     }
 
     @Test
-    public void deveLancarExceptionAoCriarRegraDeConjuntoComSomenteUmaClausula() {
-        RegraDinamicaStatus regraComUmaClausula = RegraDinamicaMock.mockRegraDinamicaStatus(QueryStatusEnum.GOOD);
-        regraComUmaClausula.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
-        try {
-            queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraComUmaClausula);
-            fail();
-        } catch(RegraDinamicaQueryBuilderException e) {
-            assertEquals("Para criar uma regra com uma única " +
-                    "condição é necessário informar somente uma cláusula.", e.getMessage());
-        }
+    public void deveGerarQueryWarningDeCondicao() {
+        // Given
+        RegraDinamicaStatus regraWarning = new RegraDinamicaStatus();
+        regraWarning.setStatus(QueryStatusEnum.WARNING);
+        regraWarning.setTipoClausula(TipoClausulaRegraDinamica.CONDICAO);
+        regraWarning.setCondicao(RegraDinamicaMock.createConditional3());
+
+        // When
+        QueryStatus queryStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraWarning);
+
+        // Then
+        assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ " +
+                "SELECT 'warning' FROM _0RegraGrupoBase_UUID_851574Result " +
+                "WHERE (_0RegraGrupoBase_UUID_851574Result.status = 'ERROR');", queryStatus.getQueryGerada());
     }
-
-    @Test
-    public void deveLancarExceptionAoCriarRegraDeCondicaoComMaisDeUmaClausula() {
-        /**RegraDinamicaStatus regraComUmaClausula = RegraDinamicaMock.mockRegraDinamicaStatus(QueryStatusEnum.GOOD);
-        regraComUmaClausula.setClausulas(Arrays.asList(RegraDinamicaMock.createClause1()));
-
-        try {
-            queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraComUmaClausula);
-            fail();
-        } catch(RegraDinamicaQueryBuilderException e) {
-            assertEquals("Para criar uma regra com " +
-                    "conjunto OR é necessário informar no mínimo duas cláusulas.", e.getMessage());
-        }**/
-    }
-
-    @Test
-    public void deveLancarExcecaoSeNomeJanelaVazio() {
-        try {
-            queryBuilder.criarQuery(null, null);
-            fail();
-        } catch (RegraDinamicaQueryBuilderException e) {
-            assertEquals("Nome da janela não pode ser vazio.", e.getMessage());
-        }
-    }
-
-    @Test
-    public void deveLancarExcecaoSeRegraVazia() {
-        try {
-            queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, new RegraDinamicaStatus());
-            fail();
-        } catch (RegraDinamicaQueryBuilderException e) {
-            assertEquals("É necessário adicionar ao menos uma cláusula para criar uma regra.", e.getMessage());
-        }
-    }
-
 }
