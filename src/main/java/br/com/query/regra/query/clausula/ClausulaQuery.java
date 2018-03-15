@@ -9,6 +9,14 @@ public class ClausulaQuery {
     private ClausulaCondicaoQuery condicao;
     private ClausulaConjuntoQuery conjunto;
 
+    public ClausulaQuery(TipoClausulaRegraDinamica tipoClausula, ClausulaCondicaoQuery condicao, ClausulaConjuntoQuery conjunto) {
+        this.tipoClausula = tipoClausula;
+        this.condicao = condicao;
+        this.conjunto = conjunto;
+    }
+
+    public ClausulaQuery() {}
+
     public TipoClausulaRegraDinamica getTipoClausula() {
         return tipoClausula;
     }
