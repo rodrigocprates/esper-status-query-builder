@@ -225,7 +225,7 @@ public class RegraStatusQueryParser {
     private String formatarAtributoEvento(ClausulaCondicaoQuery condicao) {
         if (CategoriaCondicaoQuery.STATUS_GRUPO.equals(condicao.getCategoriaCondicao()) || CategoriaCondicaoQuery.STATUS_IC.equals(condicao.getCategoriaCondicao()))
             return STATUS_ATTRIBUTE;
-        else if (CategoriaCondicaoQuery.CONDICAO_IC.equals(condicao.getCategoriaCondicao()))
+        else if (CategoriaCondicaoQuery.VALOR_IC.equals(condicao.getCategoriaCondicao()))
             return DOUBLE_VALUE_ATTRIBUTE;
 
         return null;

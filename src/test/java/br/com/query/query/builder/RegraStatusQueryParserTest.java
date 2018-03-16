@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class RegraStatusQueryParserTest {
 
     public static final String REGRA_GRUPO_BASE_WINDOWNAME_ = "_RegraGrupoBase_WINDOWNAME_";
-    private RegraStatusQueryParser queryBuilder = new RegraStatusQueryParser();
+    private RegraStatusQueryParser queryParser = new RegraStatusQueryParser();
 
     @Test
     public void deveGerarQueryWarningDeConjuntoANDCom2Condicoes() {
@@ -28,7 +28,7 @@ public class RegraStatusQueryParserTest {
         RegraDinamicaStatus regra = RegraDinamicaMock.mockRegraDinamicaStatus(QueryStatusEnum.WARNING);
 
         // When
-        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_,
+        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryParser.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_,
                 regra);
 
         // Then
@@ -64,7 +64,7 @@ public class RegraStatusQueryParserTest {
         regra.setConjunto(conjuntoCom1CondicaoANDConjuntoCom2Condicoes);
 
         // When
-        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regra);
+        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryParser.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regra);
 
         // Then
         assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ SELECT 'good' " +
@@ -83,7 +83,7 @@ public class RegraStatusQueryParserTest {
         regraWarning.setCondicao(RegraDinamicaMock.createConditional3());
 
         // When
-        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraWarning);
+        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryParser.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraWarning);
 
         // Then
         assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ " +

@@ -70,7 +70,7 @@ public final class RegraDinamicaMock {
     public static ClausulaCondicaoQuery createConditional2() {
         ClausulaCondicaoQuery q = new ClausulaCondicaoQuery();
         q.setEvento(new Evento(Evento.TipoEventoCondicao.IC, "IC01"));
-        q.setCategoriaCondicao(CategoriaCondicaoQuery.CONDICAO_IC);
+        q.setCategoriaCondicao(CategoriaCondicaoQuery.VALOR_IC);
         q.setOperador(TipoOperadorQuery.MAIOR_QUE);
         q.setValorComparado(300);
         return q;

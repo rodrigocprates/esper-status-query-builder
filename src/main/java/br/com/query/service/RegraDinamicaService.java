@@ -6,10 +6,10 @@ import br.com.query.regra.RegraDinamica;
 
 public class RegraDinamicaService {
 
-    private RegraStatusQueryParser queryBuilder;
+    private RegraStatusQueryParser queryParser;
 
-    public RegraDinamicaService(RegraStatusQueryParser queryBuilder) {
-        this.queryBuilder = queryBuilder;
+    public RegraDinamicaService(RegraStatusQueryParser queryParser) {
+        this.queryParser = queryParser;
     }
 
     public QueriesRegraDinamica gerarQueries(RegraDinamica regra) {
@@ -17,11 +17,10 @@ public class RegraDinamicaService {
 
         String nomeJanela = criarNomeJanela(regra);
 
-        // TODO ver como montar objeto com error, se faz tudo no service ou cria no obj um Map chave(good, warning, window, etc) e list de erros de cada?
         queries.setQueryCriacaoJanela(gerarQueryCriacaoJanela(nomeJanela));
-        queries.setQueryGood(queryBuilder.criarQuery(nomeJanela, regra.getGood()).getQueryGerada());
-        queries.setQueryWarning(queryBuilder.criarQuery(nomeJanela, regra.getWarning()).getQueryGerada());
-        queries.setQueryError(queryBuilder.criarQuery(nomeJanela, regra.getError()).getQueryGerada());
+        queries.setQueryGood(queryParser.criarQuery(nomeJanela, regra.getGood()).getQueryGerada());
+        queries.setQueryWarning(queryParser.criarQuery(nomeJanela, regra.getWarning()).getQueryGerada());
+        queries.setQueryError(queryParser.criarQuery(nomeJanela, regra.getError()).getQueryGerada());
         queries.setQueryStatus(gerarSelectMonitoringAction(nomeJanela));
 
         return queries;
