@@ -1,7 +1,7 @@
 package br.com.query.parser;
 
-import br.com.query.excecoes.RegraDinamicaQueryBuilderException;
-import br.com.query.parser.modelo.QueryStatus;
+import br.com.query.excecoes.RegraDinamicaQueryParserException;
+import br.com.query.parser.modelo.QueryRegraDinamicaStatus;
 import br.com.query.regra.RegraDinamicaStatus;
 import br.com.query.regra.query.clausula.ClausulaQuery;
 import br.com.query.regra.query.clausula.TipoClausulaRegraDinamica;
@@ -29,10 +29,10 @@ public class RegraStatusQueryParser {
     public static final String SINGLE_QUOT_MARK = "'";
     public static final String COMMA_IN_NOT_IN_CLAUSE = ", ";
 
-    private QueryStatus queryStatus;
+    private QueryRegraDinamicaStatus queryRegraDinamicaStatus;
 
-    public QueryStatus criarQuery(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
-        queryStatus = new QueryStatus();
+    public QueryRegraDinamicaStatus criarQuery(String nomeJanela, RegraDinamicaStatus regraStatusDinamica) {
+        queryRegraDinamicaStatus = new QueryRegraDinamicaStatus();
 
         String queryGerada = new StringBuilder()
                 .append(gerarInsertNaWindow(nomeJanela))
@@ -42,10 +42,10 @@ public class RegraStatusQueryParser {
                 .append(";")
                 .toString();
 
-        if (CollectionUtils.isEmpty(queryStatus.getErros()))
-            queryStatus.setQueryGerada(queryGerada);
+        if (CollectionUtils.isEmpty(queryRegraDinamicaStatus.getErros()))
+            queryRegraDinamicaStatus.setQueryGerada(queryGerada);
 
-        return queryStatus;
+        return queryRegraDinamicaStatus;
     }
 
     private String gerarInsertNaWindow(String regraBase) {
@@ -63,7 +63,7 @@ public class RegraStatusQueryParser {
                 whereSelect.append(gerarQueryConjunto(regraStatusDinamica));
                 break;
             default:
-                throw new RegraDinamicaQueryBuilderException("Só é possível criar cláusulas de CONJUNTO ou CONDIÇÃO.");
+                throw new RegraDinamicaQueryParserException("Só é possível criar cláusulas de CONJUNTO ou CONDIÇÃO.");
         }
 
         return whereSelect.toString();
@@ -129,7 +129,7 @@ public class RegraStatusQueryParser {
             return criarClausulaCondicao(regraStatusDinamica.getCondicao());
         }
 
-        throw new RegraDinamicaQueryBuilderException("É necessário inserir uma única cláusula do tipo 'CONDICAO' para gerar a query.");
+        throw new RegraDinamicaQueryParserException("É necessário inserir uma única cláusula do tipo 'CONDICAO' para gerar a query.");
     }
 
     private String gerarQueryConjunto(RegraDinamicaStatus regraStatusDinamica) {
@@ -151,7 +151,7 @@ public class RegraStatusQueryParser {
         else if (TipoClausulaRegraDinamica.CONDICAO.equals(clausula.getTipoClausula()))
             return criarClausulaCondicao(clausula.getCondicao());
 
-        throw new RegraDinamicaQueryBuilderException("There's no Query Clause implementation class found.");
+        throw new RegraDinamicaQueryParserException("There's no Query Clause implementation class found.");
     }
 
     private String criarClausulaConjunto(ClausulaConjuntoQuery conjunto) {

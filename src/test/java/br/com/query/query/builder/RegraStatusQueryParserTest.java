@@ -1,7 +1,7 @@
 package br.com.query.query.builder;
 
 import br.com.query.parser.RegraStatusQueryParser;
-import br.com.query.parser.modelo.QueryStatus;
+import br.com.query.parser.modelo.QueryRegraDinamicaStatus;
 import br.com.query.regra.RegraDinamicaStatus;
 import br.com.query.regra.query.clausula.ClausulaQuery;
 import br.com.query.regra.query.clausula.TipoClausulaRegraDinamica;
@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,14 +28,14 @@ public class RegraStatusQueryParserTest {
         RegraDinamicaStatus regra = RegraDinamicaMock.mockRegraDinamicaStatus(QueryStatusEnum.WARNING);
 
         // When
-        QueryStatus queryStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_,
+        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_,
                 regra);
 
         // Then
         assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ " +
                 "SELECT 'warning' FROM _0RegraGrupoBase_UUID_123Result, IC01Result " +
                 "WHERE (_0RegraGrupoBase_UUID_123Result.status NOT IN ('ERROR', 'WARNING')) " +
-                "AND (IC01Result.doubleValue > 300);", queryStatus.getQueryGerada());
+                "AND (IC01Result.doubleValue > 300);", queryRegraDinamicaStatus.getQueryGerada());
     }
 
     @Test
@@ -65,14 +64,14 @@ public class RegraStatusQueryParserTest {
         regra.setConjunto(conjuntoCom1CondicaoANDConjuntoCom2Condicoes);
 
         // When
-        QueryStatus queryStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regra);
+        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regra);
 
         // Then
         assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ SELECT 'good' " +
                 "FROM _0RegraGrupoBase_UUID_123Result, IC01Result " +
                 "WHERE (_0RegraGrupoBase_UUID_123Result.status NOT IN ('ERROR', 'WARNING')) " +
                     "AND ((_0RegraGrupoBase_UUID_123Result.status NOT IN ('ERROR', 'WARNING')) " +
-                    "OR (IC01Result.doubleValue > 300));", queryStatus.getQueryGerada());
+                    "OR (IC01Result.doubleValue > 300));", queryRegraDinamicaStatus.getQueryGerada());
     }
 
     @Test
@@ -84,11 +83,11 @@ public class RegraStatusQueryParserTest {
         regraWarning.setCondicao(RegraDinamicaMock.createConditional3());
 
         // When
-        QueryStatus queryStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraWarning);
+        QueryRegraDinamicaStatus queryRegraDinamicaStatus = queryBuilder.criarQuery(REGRA_GRUPO_BASE_WINDOWNAME_, regraWarning);
 
         // Then
         assertEquals("INSERT INTO _RegraGrupoBase_WINDOWNAME_ " +
                 "SELECT 'warning' FROM _0RegraGrupoBase_UUID_851574Result " +
-                "WHERE (_0RegraGrupoBase_UUID_851574Result.status = 'ERROR');", queryStatus.getQueryGerada());
+                "WHERE (_0RegraGrupoBase_UUID_851574Result.status = 'ERROR');", queryRegraDinamicaStatus.getQueryGerada());
     }
 }

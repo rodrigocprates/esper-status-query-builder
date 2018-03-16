@@ -5,12 +5,12 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryStatus {
+public class QueryRegraDinamicaStatus {
 
     private String queryGerada;
     private List<String> erros;
 
-    public QueryStatus() {
+    public QueryRegraDinamicaStatus() {
         this.erros = new ArrayList<>();
     }
 

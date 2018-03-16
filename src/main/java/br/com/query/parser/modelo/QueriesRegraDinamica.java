@@ -50,12 +50,11 @@ public class QueriesRegraDinamica {
 
     @Override
     public String toString() {
-        return "QueriesRegraDinamica{" +
-                "queryCriacaoJanela='" + queryCriacaoJanela + '\'' +
-                ", queryGood='" + queryGood + '\'' +
-                ", queryWarning='" + queryWarning + '\'' +
-                ", queryError='" + queryError + '\'' +
-                ", queryStatus='" + queryStatus + '\'' +
-                '}';
+        return "Queries Regra Dinamica: \n" +
+                queryCriacaoJanela + "\n" +
+                queryGood + "\n" +
+                queryWarning + "\n" +
+                queryError + "\n" +
+                queryStatus + "\n";
     }
 }
